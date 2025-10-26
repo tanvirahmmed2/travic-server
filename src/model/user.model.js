@@ -19,6 +19,9 @@ const userSchema = new mongoose.Schema({
     tokenExpireAt: {
         type: Date, default: null, trim: true
     },
+    address: {
+        type: String, default: null, trim: true
+    },
     saved: [
         {
             title: { type: String, trim: true },
@@ -31,7 +34,8 @@ const userSchema = new mongoose.Schema({
             packageId: { type: String, trim: true },
             payment: { type: String, trim: true },
         }
-    ]
+    ],
+    
 })
 
 const User = mongoose.model('users', userSchema)
