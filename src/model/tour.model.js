@@ -1,27 +1,66 @@
-const mongoose= require('mongoose')
+const mongoose = require('mongoose')
 
-const tourSchema= new mongoose.Schema({
-    title:{
+const tourSchema = new mongoose.Schema({
+    title: {
         type: String,
         required: true,
         trim: true
     },
-    location:{
+    location: {
         type: String,
         required: true,
         trim: true
     },
-    price:{
+    price: {
         type: String,
         required: true,
         trim: true
     },
-    duration:{
+    duration: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    rating: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    category: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    departureDates: [
+        {
+            type: Date,
+            required: true,
+            trim: true
+        }
+    ],
+    highlights: [
+        {
+            type: String,
+            required: true,
+            trim: true
+        }
+    ],
+    image: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    imageId: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    description: {
         type: String,
         required: true,
         trim: true
     },
 })
 
-const Tour= mongoose.model('tours', tourSchema)
-module.exports= Tour
+const Tour = mongoose.model('tours', tourSchema)
+module.exports = Tour
