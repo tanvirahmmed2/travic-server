@@ -1,5 +1,4 @@
 const Message = require("../model/message.model");
-const User = require("../model/user.model");
 
 const getMessage = async (req, res) => {
     try {
@@ -32,7 +31,7 @@ const newMessage = async (req, res) => {
                 message: 'Fill all field'
             });
         }
-        const newMessage = new User({ name, email, subject, message })
+        const newMessage = new Message({ name, email, subject, message })
         await newMessage.save()
         res.status(200).send({
             success: true,
