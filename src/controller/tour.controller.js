@@ -25,20 +25,26 @@ const getTour = async (req, res) => {
 
 const newTour = async (req, res) => {
     try {
-        const { name, email, subject, tour } = req.body
-        if (!name || !email || !subject || !tour) {
+        const { title, location, price, duration, rating, category, description } = req.body
+        if (!title || !location || !price || !duration || !rating || !category || !description) {
             return res.status(400).send({
                 success: false,
-                tour: 'Fill all field'
+                tour: 'Fill all inputs'
             });
         }
-        const newMessage = new User({ name, email, subject, tour })
-        await newMessage.save()
+        const existTour = await Tour.findOne({ title })
+        if (existTour) {
+            return res.status(400).send({
+                success: false,
+                tour: 'This tour package already exists'
+            });
+        }
+        const newTour = new Tour({ title, location, price, duration, rating, category, description })
+        await newTour.save()
         res.status(200).send({
-            success: true,
-            tour: `Thank you ${name} fro messaging`
-        })
-
+            success: false,
+            tour: 'New tour package added successfully'
+        });
     } catch (error) {
         res.status(500).send({
             success: false,
@@ -46,6 +52,8 @@ const newTour = async (req, res) => {
         })
     }
 }
+
+
 
 const removeTour = async (req, res) => {
     try {

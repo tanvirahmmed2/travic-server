@@ -39,14 +39,21 @@ const tourSchema = new mongoose.Schema({
     departureDates: [
         {
             type: Date,
-            required: true,
+            default: null,
             trim: true
         }
     ],
     highlights: [
         {
             type: String,
-            required: true,
+            default: null,
+            trim: true
+        }
+    ],
+    includes: [
+        {
+            type: String,
+            default: null,
             trim: true
         }
     ],
