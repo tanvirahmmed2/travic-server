@@ -22,6 +22,9 @@ const userSchema = new mongoose.Schema({
     address: {
         type: String, default: null, trim: true
     },
+    role: {
+        type: String, default: 'user', trim: true
+    },
     saved: [
         {
             title: { type: String, trim: true },
