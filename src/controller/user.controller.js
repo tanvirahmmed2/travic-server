@@ -6,7 +6,7 @@ const { JWT_SECRET } = require("../config/secret")
 const getUser = async (req, res) => {
     try {
         const users = await User.find({}).select('-password')
-        if (!users) {
+        if (!users || users.length===0) {
             return res.status(400).send({
                 success: false,
                 message: 'No user found'

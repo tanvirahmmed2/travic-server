@@ -6,7 +6,7 @@ const cloudinary = require('../config/cloudinary')
 const getTour = async (req, res) => {
     try {
         const tours = await Tour.find({})
-        if (tours.length === 0) {
+        if (!tours || tours.length === 0) {
             return res.status(400).send({
                 success: false,
                 tour: 'No tour found'

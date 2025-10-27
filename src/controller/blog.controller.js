@@ -4,7 +4,7 @@ const cloudinary = require('../config/cloudinary')
 const getBlog = async (req, res) => {
     try {
         const blogs = await Blog.find({})
-        if (!blogs) {
+        if (!blogs || blogs.length===0) {
             return res.status(400).send({
                 success: false,
                 message: 'No blog data found'
