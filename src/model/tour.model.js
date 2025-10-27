@@ -36,27 +36,9 @@ const tourSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    departureDates: [
-        {
-            type: Date,
-            default: null,
-            trim: true
-        }
-    ],
-    highlights: [
-        {
-            type: String,
-            default: null,
-            trim: true
-        }
-    ],
-    includes: [
-        {
-            type: String,
-            default: null,
-            trim: true
-        }
-    ],
+    departureDates: { type: [String], default: [] },
+    highlights: { type: [String], default: [] },
+    includes: { type: [String], default: [] },
     image: {
         type: String,
         required: true,
