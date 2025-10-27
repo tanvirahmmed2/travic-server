@@ -1,24 +1,24 @@
 const Tour = require("../model/tour.model");
 
-const cloudinary= require('../config/cloudinary')
+const cloudinary = require('../config/cloudinary')
 
 
 const getTour = async (req, res) => {
     try {
         const tours = await Tour.find({})
-        if (!tours) {
+        if (tours.length === 0) {
             return res.status(400).send({
                 success: false,
                 tour: 'No tour found'
             });
         }
-        res.status(200).send({
+        return res.status(200).send({
             success: false,
             tour: 'Successfully found tours',
             payload: tours
         });
     } catch (error) {
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             tour: 'Could not fetch tours'
         })
@@ -27,7 +27,7 @@ const getTour = async (req, res) => {
 
 const newTour = async (req, res) => {
     try {
-        const { title, location, price, duration, rating, category, description } = req.body
+        const { title, location, price, duration, rating, category, description, departureDates, highlights, includes } = req.body
         if (!title || !location || !price || !duration || !rating || !category || !description) {
             return res.status(400).send({
                 success: false,
@@ -41,14 +41,38 @@ const newTour = async (req, res) => {
                 tour: 'This tour package already exists'
             });
         }
-        const newTour = new Tour({ title, location, price, duration, rating, category, description })
+        const departureDateArry = Array.isArray(departureDates)
+            ? departureDates
+            : departureDates?.split(",").map((t) => t.trim());
+
+        const highlightArry = Array.isArray(highlights)
+            ? highlights
+            : highlights?.split(",").map((t) => t.trim());
+
+        const includeArry = Array.isArray(includes)
+            ? includes
+            : includes?.split(",").map((t) => t.trim());
+
+        if (!req.file) {
+            return res.status(400).send({
+                success: false,
+                tour: 'Please add an image'
+            });
+        }
+        const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+
+        const uploadImage = await cloudinary.uploader.upload(fileStr, { folder: 'blogs' })
+
+
+
+        const newTour = new Tour({ title, location, price, duration, rating, category, description, image: uploadImage.secure_url, imageId: uploadImage.public_id, departureDates: departureDateArry, highlights: highlightArry, includes: includeArry })
         await newTour.save()
-        res.status(200).send({
-            success: false,
+        return res.status(200).send({
+            success: true,
             tour: 'New tour package added successfully'
         });
     } catch (error) {
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             tour: 'Operation failed'
         })
@@ -73,14 +97,15 @@ const removeTour = async (req, res) => {
                 tour: 'Tour not found'
             });
         }
+        await cloudinary.uploader.destroy(tour.imageId)
         await Tour.findByIdAndDelete(id)
-        res.status(200).send({
-            success: false,
+        return res.status(200).send({
+            success: true,
             tour: 'Successfully deleted tour'
         })
 
     } catch (error) {
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             tour: 'Failed to remove tour'
         })
