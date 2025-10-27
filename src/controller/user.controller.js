@@ -37,6 +37,19 @@ const registerUser = async (req, res) => {
                 message: 'Fill all inputs'
             })
         }
+        const existUser = await User.findOne({ email })
+        if (existUser) {
+            return res.status(400).send({
+                success: false,
+                message: 'user already exist'
+            })
+        }
+        if (password.length < 6) {
+            return res.status(400).send({
+                success: false,
+                message: 'password must contain atleast 6 character'
+            })
+        }
         const salt = bcrypt.genSaltSync(10);
         const hashedPass = bcrypt.hashSync(password, salt);
         const newUser = new User({ name, email, password: hashedPass })
@@ -57,7 +70,7 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body
-        if (!email, password) {
+        if (!email && !password) {
             return res.status(400).send({
                 success: false,
                 message: "Email or Password missing"
@@ -68,7 +81,7 @@ const loginUser = async (req, res) => {
         if (!user) {
             return res.status(400).send({
                 success: false,
-                message: "No email found with this email"
+                message: "Enter a valid email"
             })
         }
 
@@ -76,7 +89,7 @@ const loginUser = async (req, res) => {
         if (!passMatch) {
             return res.status(400).send({
                 success: false,
-                message: "Incorrect password. Try again or reset your password"
+                message: "Incorrect password"
             })
         }
 
@@ -148,9 +161,46 @@ const savePackage = async (req, res) => {
 }
 
 
+const protectedUser = async (req, res) => {
+    try {
+        const token = req.cookies.user_token
+        if (!token) {
+            return res.status(400).send({
+                success: false,
+                message: 'TOken not found please login'
+            });
+        }
+        const decoded = await jwt.verify(token, JWT_SECRET)
+        if (!decoded) {
+            return res.status(400).send({
+                success: false,
+                message: 'invalid token'
+            });
+        }
+        const user = await User.findById(decoded.id)
+        if (!user) {
+            return res.status(400).send({
+                success: false,
+                message: 'in valid user'
+            });
+        }
+        return res.status(200).send({
+            success: true,
+            payload: user
+        });
+    } catch (error) {
+        return res.status(500).send({
+            success: false,
+            message: 'User not logged in, please login'
+        });
+
+    }
+}
+
 module.exports = {
     getUser,
     registerUser,
     loginUser,
-    savePackage
+    savePackage,
+    protectedUser
 }

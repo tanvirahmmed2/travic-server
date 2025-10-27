@@ -29,10 +29,6 @@ const isLogin = async (req, res, next) => {
             })
         }
         req.user = user
-        res.status(200).send({
-            success: true,
-            message: "User Logged in"
-        })
         next()
 
     } catch (error) {
@@ -60,11 +56,6 @@ const isAdmin = async (req, res, next) => {
             })
         }
 
-        res.status(200).send({
-            success: true,
-            message: 'Admin authenticated successfully',
-
-        })
         next()
 
     } catch (error) {

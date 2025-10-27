@@ -12,10 +12,13 @@ const app= express()
 
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}))
 app.use(cookieParser())
 
-app.get('/', (req,res)=>{
+app.get('/api', (req,res)=>{
     return res.status(200).send({
         success: true,
         message: 'Server is running'
