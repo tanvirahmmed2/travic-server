@@ -22,6 +22,79 @@ const getBlog = async (req, res) => {
     }
 }
 
+const newBlog = async (req, res) => {
+    try {
+        const { title, author, description, tags } = req.body
+        if (!title || !author || !description || !tags) {
+            return res.status(400).send({
+                success: false,
+                message: 'Fill all inputs'
+            });
+        }
+        const existBlog = await Blog.findOne({ title })
+        if (existBlog) {
+            return res.status(400).send({
+                success: false,
+                message: 'Blog with this title already exists'
+            });
+        }
+        const tagArray = Array.isArray(tags)
+            ? tags
+            : tags?.split(",").map((t) => t.trim());
+
+        const newBlog = new Blog({
+            title,
+            description,
+            author,
+            tags: tagArray,
+        });
+
+        await newBlog.save()
+        res.status(200).send({
+            success: true,
+            message: 'Successfully added blog'
+        });
+    } catch (error) {
+        res.status(400).send({
+            success: false,
+            message: 'Failed to add blog data'
+        });
+    }
+
+}
+
+
+const removeBlog = async (req, res) => {
+    try {
+        const { id } = req.body
+        if (!id) {
+            return res.status(400).send({
+                success: false,
+                message: 'Blog id not found'
+            });
+        }
+        const blog = await Blog.findById(id)
+        if (!blog) {
+            return res.status(400).send({
+                success: false,
+                message: 'No blog found with this id'
+            });
+        }
+        await Blog.findByIdAndDelete(id)
+        res.status(200).send({
+            success: true,
+            message: 'Successfully removed blog'
+        });
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message: 'Failed to remove blog'
+        });
+    }
+
+}
+
 module.exports = {
-    getBlog
+    getBlog,
+    newBlog
 }
