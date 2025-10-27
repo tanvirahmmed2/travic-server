@@ -4,6 +4,7 @@ const cookieParser= require('cookie-parser')
 const userRouter = require('./router/user.router')
 const tourRouter = require('./router/tour.router')
 const messageRouter = require('./router/message.router')
+const blogRouter = require('./router/blog.router')
 
 
 const app= express()
@@ -20,6 +21,7 @@ app.use(cookieParser())
 app.use('/api/user', userRouter)
 app.use('/api/message', messageRouter)
 app.use('/api/tour', tourRouter)
+app.use('/api/blog', blogRouter)
 
 
 
