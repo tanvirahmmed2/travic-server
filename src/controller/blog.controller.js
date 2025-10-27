@@ -96,5 +96,6 @@ const removeBlog = async (req, res) => {
 
 module.exports = {
     getBlog,
-    newBlog
+    newBlog,
+    removeBlog
 }
