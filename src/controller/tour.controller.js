@@ -1,5 +1,7 @@
 const Tour = require("../model/tour.model");
 
+const cloudinary= require('../config/cloudinary')
+
 
 const getTour = async (req, res) => {
     try {

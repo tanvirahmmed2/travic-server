@@ -1,4 +1,5 @@
 const Blog = require("../model/blog.model")
+const cloudinary = require('../config/cloudinary')
 
 const getBlog = async (req, res) => {
     try {
@@ -42,11 +43,25 @@ const newBlog = async (req, res) => {
             ? tags
             : tags?.split(",").map((t) => t.trim());
 
+        if (!req.file) {
+            return res.status(400).send({
+                success: false,
+                message: 'Please add image'
+            });
+        }
+
+        const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+
+        const uploadImage = await cloudinary.uploader.upload(fileStr, { folder: 'blogs' })
+
+
         const newBlog = new Blog({
             title,
             description,
             author,
             tags: tagArray,
+            image: uploadImage.secure_url,
+            imageId: uploadImage.public_id
         });
 
         await newBlog.save()
@@ -80,6 +95,7 @@ const removeBlog = async (req, res) => {
                 message: 'No blog found with this id'
             });
         }
+        await cloudinary.uploader.destroy(blog.imageId)
         await Blog.findByIdAndDelete(id)
         res.status(200).send({
             success: true,
