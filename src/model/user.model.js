@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     saved: [
         {
             title: { type: String, trim: true },
-            packageId: { type: String, trim: true },
+            tourId: { type: String, trim: true },
         }
     ],
     order: [
