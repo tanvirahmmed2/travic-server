@@ -197,10 +197,38 @@ const protectedUser = async (req, res) => {
     }
 }
 
+const logoutUser = async (req, res) => {
+    try {
+        const token = req.cookies.user_token
+        if (!token) {
+            return res.status(400).send({
+                success: false,
+                message: 'User already logged out'
+            });
+        }
+        res.clearCookie("user_token", {
+            httpOnly: true,      // Prevents client-side JS from accessing the cookie
+            secure: true,         // Ensures cookie is sent only over HTTPS
+            sameSite: "none",
+            path: "/",
+        })
+        return res.status(200).send({
+            success: true,
+            message: "Successfully logged out"
+        })
+    } catch (error) {
+        return res.status(500).send({
+            success: false,
+            message: 'Failed to log out'
+        });
+    }
+}
+
 module.exports = {
     getUser,
     registerUser,
     loginUser,
     savePackage,
-    protectedUser
+    protectedUser,
+    logoutUser
 }
