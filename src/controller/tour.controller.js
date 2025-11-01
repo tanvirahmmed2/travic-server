@@ -31,14 +31,14 @@ const newTour = async (req, res) => {
         if (!title || !location || !price || !duration || !rating || !category || !description) {
             return res.status(400).send({
                 success: false,
-                tour: 'Fill all inputs'
+                message: 'Fill all inputs'
             });
         }
         const existTour = await Tour.findOne({ title })
         if (existTour) {
             return res.status(400).send({
                 success: false,
-                tour: 'This tour package already exists'
+                message: 'This tour package already exists'
             });
         }
         const departureDateArry = Array.isArray(departureDates)
@@ -56,7 +56,7 @@ const newTour = async (req, res) => {
         if (!req.file) {
             return res.status(400).send({
                 success: false,
-                tour: 'Please add an image'
+                message: 'Please add an image'
             });
         }
         const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
@@ -69,12 +69,12 @@ const newTour = async (req, res) => {
         await newTour.save()
         return res.status(200).send({
             success: true,
-            tour: 'New tour package added successfully'
+            message: 'New tour package added successfully'
         });
     } catch (error) {
         return res.status(500).send({
             success: false,
-            tour: 'Operation failed'
+            message: 'Operation failed'
         })
     }
 }
@@ -87,27 +87,27 @@ const removeTour = async (req, res) => {
         if (!id) {
             return res.status(400).send({
                 success: false,
-                tour: 'Tour id not found'
+                message: 'Tour id not found'
             });
         }
         const tour = await Tour.findById(id)
         if (!tour) {
             return res.status(400).send({
                 success: false,
-                tour: 'Tour not found'
+                message: 'Tour not found'
             });
         }
         await cloudinary.uploader.destroy(tour.imageId)
         await Tour.findByIdAndDelete(id)
         return res.status(200).send({
             success: true,
-            tour: 'Successfully deleted tour'
+            message: 'Successfully deleted tour'
         })
 
     } catch (error) {
         return res.status(500).send({
             success: false,
-            tour: 'Failed to remove tour'
+            message: 'Failed to remove tour'
         })
     }
 }
