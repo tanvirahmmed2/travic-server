@@ -9,18 +9,18 @@ const getTour = async (req, res) => {
         if (!tours || tours.length === 0) {
             return res.status(400).send({
                 success: false,
-                tour: 'No tour found'
+                message: 'No tour found'
             });
         }
         return res.status(200).send({
-            success: false,
-            tour: 'Successfully found tours',
+            success: true,
+            message: 'Successfully found tours',
             payload: tours
         });
     } catch (error) {
         return res.status(500).send({
             success: false,
-            tour: 'Could not fetch tours'
+            message: 'Could not fetch tours'
         })
     }
 }
