@@ -1,17 +1,12 @@
 const mongoose= require('mongoose')
 
 const messageSchema= new mongoose.Schema({
-    title:{
+    name:{
         type: String,
         required: true,
         trim: true
     },
     email:{
-        type: String,
-        required: true,
-        trim: true
-    },
-    subject:{
         type: String,
         required: true,
         trim: true

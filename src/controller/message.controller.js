@@ -10,7 +10,7 @@ const getMessage = async (req, res) => {
             });
         }
         res.status(200).send({
-            success: false,
+            success: true,
             message: 'Successfully found messages',
             payload: messages
         });
@@ -24,27 +24,32 @@ const getMessage = async (req, res) => {
 
 const newMessage = async (req, res) => {
     try {
-        const { name, email, subject, message } = req.body
-        if (!name || !email || !subject || !message) {
+        const { name, email, message } = req.body;
+
+        if (!name || !email || !message) {
             return res.status(400).send({
                 success: false,
-                message: 'Fill all field'
+                message: 'Please fill all fields'
             });
         }
-        const newMessage = new Message({ name, email, subject, message })
-        await newMessage.save()
-        res.status(200).send({
+
+        const messageDoc = new Message({ name, email, message });
+        await messageDoc.save();
+
+        res.status(201).send({
             success: true,
-            message: `Thank you ${name} fro messaging`
-        })
+            message: `Thank you ${name}, your message has been received`
+        });
 
     } catch (error) {
+        console.error("Error saving message:", error);
         res.status(500).send({
             success: false,
-            message: 'Operation failed'
-        })
+            message: 'Operation failed',
+            error: error.message
+        });
     }
-}
+};
 
 const removeMessage = async (req, res) => {
     try {
@@ -64,7 +69,7 @@ const removeMessage = async (req, res) => {
         }
         await Message.findByIdAndDelete(id)
         res.status(200).send({
-            success: false,
+            success: true,
             message: 'Successfully deleted message'
         })
 
