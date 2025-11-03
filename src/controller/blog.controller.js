@@ -4,7 +4,7 @@ const cloudinary = require('../config/cloudinary')
 const getBlog = async (req, res) => {
     try {
         const blogs = await Blog.find({})
-        if (!blogs || blogs.length===0) {
+        if (!blogs || blogs.length === 0) {
             return res.status(400).send({
                 success: false,
                 message: 'No blog data found'
@@ -25,8 +25,8 @@ const getBlog = async (req, res) => {
 
 const newBlog = async (req, res) => {
     try {
-        const { title, reporter, description, tags } = req.body
-        if (!title || !reporter || !description || !tags) {
+        const { title, reporter, description, tags, location } = req.body
+        if (!title || !reporter || !description || !tags || !location) {
             return res.status(400).send({
                 success: false,
                 message: 'Fill all inputs'
@@ -58,7 +58,8 @@ const newBlog = async (req, res) => {
         const newBlog = new Blog({
             title,
             description,
-            author,
+            reporter,
+            location,
             tags: tagArray,
             image: uploadImage.secure_url,
             imageId: uploadImage.public_id
@@ -70,9 +71,11 @@ const newBlog = async (req, res) => {
             message: 'Successfully added blog'
         });
     } catch (error) {
-        res.status(400).send({
+        res.status(500).send({
             success: false,
-            message: 'Failed to add blog data'
+            message: 'Failed to add blog data',
+            error: error.message,        // 👈 add this
+            stack: error.stack
         });
     }
 
