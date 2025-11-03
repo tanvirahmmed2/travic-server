@@ -25,8 +25,8 @@ const getBlog = async (req, res) => {
 
 const newBlog = async (req, res) => {
     try {
-        const { title, author, description, tags } = req.body
-        if (!title || !author || !description || !tags) {
+        const { title, reporter, description, tags } = req.body
+        if (!title || !reporter || !description || !tags) {
             return res.status(400).send({
                 success: false,
                 message: 'Fill all inputs'
