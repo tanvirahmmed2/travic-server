@@ -1,11 +1,7 @@
 const mongoose = require('mongoose')
 
 const tourSchema = new mongoose.Schema({
-    id: {
-        type: String,
-        required: true,
-        trim: true
-    },
+   
     title: {
         type: String,
         required: true,
@@ -26,19 +22,10 @@ const tourSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    rating: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    category: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    departureDates: { type: [String], default: [] },
+    departure: { type: [String], default: [] },
     highlights: { type: [String], default: [] },
     includes: { type: [String], default: [] },
+    tags: { type: [String], default: [] },
     image: {
         type: String,
         required: true,

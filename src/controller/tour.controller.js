@@ -27,8 +27,8 @@ const getTour = async (req, res) => {
 
 const newTour = async (req, res) => {
     try {
-        const { title, location, price, duration, rating, category, description, departureDates, highlights, includes } = req.body
-        if (!title || !location || !price || !duration || !rating || !category || !description) {
+        const { title, location, price, duration,  description, departure, highlights, includes, tags } = req.body
+        if (!title || !location || !price || !duration  ||  !description || !tags || !departure || !highlights || !includes) {
             return res.status(400).send({
                 success: false,
                 message: 'Fill all inputs'
@@ -41,10 +41,7 @@ const newTour = async (req, res) => {
                 message: 'This tour package already exists'
             });
         }
-        const departureDateArry = Array.isArray(departureDates)
-            ? departureDates
-            : departureDates?.split(",").map((t) => t.trim());
-
+        
         const highlightArry = Array.isArray(highlights)
             ? highlights
             : highlights?.split(",").map((t) => t.trim());
@@ -61,11 +58,11 @@ const newTour = async (req, res) => {
         }
         const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
 
-        const uploadImage = await cloudinary.uploader.upload(fileStr, { folder: 'blogs' })
+        const uploadImage = await cloudinary.uploader.upload(fileStr, { folder: 'tours' })
 
 
 
-        const newTour = new Tour({ title, location, price, duration, rating, category, description, image: uploadImage.secure_url, imageId: uploadImage.public_id, departureDates: departureDateArry, highlights: highlightArry, includes: includeArry })
+        const newTour = new Tour({ title, location, price, duration,   description, image: uploadImage.secure_url, imageId: uploadImage.public_id, departure, highlights: highlightArry, includes: includeArry })
         await newTour.save()
         return res.status(200).send({
             success: true,
@@ -74,7 +71,9 @@ const newTour = async (req, res) => {
     } catch (error) {
         return res.status(500).send({
             success: false,
-            message: 'Operation failed'
+            message: 'Operation failed',
+            error: error.message,
+            stack: error.stack
         })
     }
 }
