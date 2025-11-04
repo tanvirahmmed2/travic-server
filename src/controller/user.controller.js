@@ -224,11 +224,44 @@ const logoutUser = async (req, res) => {
     }
 }
 
+
+const updateProfile = async (req, res) => {
+    try {
+        const { name, phone, address, } = req.body
+        
+        const user = await User.findById(req.user._id)
+        if (!user) {
+            return res.status(400).send({
+                success: false,
+                message: 'user not found'
+            })
+        }
+
+        user.name = name
+        user.phone = phone
+        user.address = address
+        await user.save()
+        return res.status(200).send({
+            success: true,
+            message: 'successfully upadted profile'
+        })
+
+    } catch (error) {
+        return res.status(500).send({
+            success: false,
+            message: 'server error',
+            error: error.message
+        })
+    }
+
+}
+
 module.exports = {
     getUser,
     registerUser,
     loginUser,
     savePackage,
     protectedUser,
+    updateProfile,
     logoutUser
 }
