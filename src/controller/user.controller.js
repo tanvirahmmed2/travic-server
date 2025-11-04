@@ -167,7 +167,7 @@ const protectedUser = async (req, res) => {
         if (!token) {
             return res.status(400).send({
                 success: false,
-                message: 'TOken not found please login'
+                message: 'Token not found please login'
             });
         }
         const decoded = await jwt.verify(token, JWT_SECRET)
