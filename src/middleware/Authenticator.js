@@ -11,7 +11,7 @@ const isLogin = async (req, res, next) => {
         if (!token) {
             return res.status(400).send({
                 success: false,
-                message: "token not found, please login"
+                message: " please login"
             })
         }
         const decoded = await jwt.verify(token, JWT_SECRET)

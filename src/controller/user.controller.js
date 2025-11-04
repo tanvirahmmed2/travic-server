@@ -125,7 +125,7 @@ const saveTour = async (req, res) => {
     try {
 
         const { id } = req.body
-        if ( !id) {
+        if (!id) {
             return res.status(400).send({
                 success: false,
                 message: 'tour id not found'
@@ -138,10 +138,16 @@ const saveTour = async (req, res) => {
                 message: 'Invalid user id'
             });
         }
-        
+        const savedTour = user.saved.find(t => t.tourId.toString() === id)
+        if (savedTour) {
+            return res.status(400).send({
+                success: false,
+                message: 'Already saved tour'
+            });
+        }
         const tour = await Tour.findById(id)
         if (!tour) {
-            return res.status(500).send({
+            return res.status(400).send({
                 success: false,
                 message: 'Tour data not found'
             });
@@ -161,6 +167,38 @@ const saveTour = async (req, res) => {
 
 }
 
+const removeSaveTour = async (req, res) => {
+    try {
+        const { id } = req.body
+        if (!id) {
+            return res.status(400).send({
+                success: false,
+                message: "Tour id not found"
+            })
+        }
+        const user = await User.findById(req.user._id)
+        if (!user) {
+            return res.status(400).send({
+                success: false,
+                message: "user not found, please login"
+            })
+        }
+        await User.findByIdAndUpdate(
+            req.user._id,
+            { $pull: { saved: { _id: id } } },
+            { new: true }
+        );
+        return res.status(200).send({
+            success: true,
+            message: "Successfully removed tour from save"
+        })
+    } catch (error) {
+        return res.status(500).send({
+            success: false,
+            message: "Failed to remove tour"
+        })
+    }
+}
 
 const protectedUser = async (req, res) => {
     try {
@@ -229,7 +267,7 @@ const logoutUser = async (req, res) => {
 const updateProfile = async (req, res) => {
     try {
         const { name, phone, address, } = req.body
-        
+
         const user = await User.findById(req.user._id)
         if (!user) {
             return res.status(400).send({
@@ -264,5 +302,6 @@ module.exports = {
     saveTour,
     protectedUser,
     updateProfile,
+    removeSaveTour,
     logoutUser
 }
