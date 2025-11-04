@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
     order: [
         {
             title: { type: String, trim: true },
-            packageId: { type: String, trim: true },
+            tourId: { type: String, trim: true },
             payment: { type: String, trim: true },
         }
     ],

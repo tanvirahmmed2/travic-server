@@ -121,23 +121,24 @@ const loginUser = async (req, res) => {
 }
 
 
-const savePackage = async (req, res) => {
+const saveTour = async (req, res) => {
     try {
 
-        const { id, userId } = req.body
-        if (!userId || !id) {
+        const { id } = req.body
+        if ( !id) {
             return res.status(400).send({
                 success: false,
-                message: 'package info not found'
+                message: 'tour id not found'
             });
         }
-        const user = await User.findById(userId)
+        const user = await User.findById(req.user._id)
         if (!user) {
             return res.status(400).send({
                 success: false,
                 message: 'Invalid user id'
             });
         }
+        
         const tour = await Tour.findById(id)
         if (!tour) {
             return res.status(500).send({
@@ -260,7 +261,7 @@ module.exports = {
     getUser,
     registerUser,
     loginUser,
-    savePackage,
+    saveTour,
     protectedUser,
     updateProfile,
     logoutUser
